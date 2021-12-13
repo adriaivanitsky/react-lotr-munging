@@ -17,6 +17,24 @@ function App() {
   const getFilms = async () => {
     // Add your code here!
     // 1. Get data using fetch from https://the-one-api.dev/v2/movie/ (don't forget to set your header!)
+    const resp = await fetch(`${process.env.REACT_APP_SUPABASE_URL}/rest/v1/films`, {
+      headers: {
+        apikey: process.env.REACT_APP_SUPABASE_KEY,
+        Authorization: `Bearer ${process.env.REACT_APP_SUPABASE_KEY}`,
+      },
+    });
+    const data = await resp.json();
+    console.log(data);
+
+    const movieData = data.map((item) => {
+      return [
+        item.title,
+        item.title.replace(/\s+/g, '-').toLowerCase(),
+        item.box_office_total,
+        item.academy_award_nominations,
+      ];
+    });
+    console.log(movieData);
     // 2. Transform the response so that films contains nested arrays of:
     //   - the film's title
     //   - the film's title "slugified" i.e. in all lower case, with words separated with dashes,
@@ -26,8 +44,8 @@ function App() {
     // [["The Lord of the Rings Series", "the-lord-of-the-rings-series", 2917, 30 ], ["The Hobbit Series", "the-hobit-series", 2932, 7]...]
 
     // 3. Set the resulting transformation as state using setFilms
+
     // 4. You'll know it works if the films show up on the page
-    return [];
   };
 
   const getCharacters = async () => {
