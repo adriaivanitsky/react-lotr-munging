@@ -24,7 +24,7 @@ function App() {
       },
     });
     const data = await resp.json();
-    console.log(data);
+    // console.log(data);
 
     const movieData = data.map((item) => {
       return [
@@ -34,7 +34,7 @@ function App() {
         item.academy_award_nominations,
       ];
     });
-    console.log(movieData);
+    // console.log(movieData);
     // 2. Transform the response so that films contains nested arrays of:
     //   - the film's title
     //   - the film's title "slugified" i.e. in all lower case, with words separated with dashes,
@@ -44,6 +44,8 @@ function App() {
     // [["The Lord of the Rings Series", "the-lord-of-the-rings-series", 2917, 30 ], ["The Hobbit Series", "the-hobit-series", 2932, 7]...]
 
     // 3. Set the resulting transformation as state using setFilms
+    setFilms(movieData);
+    // console.log(films);
 
     // 4. You'll know it works if the films show up on the page
   };
@@ -75,7 +77,7 @@ function App() {
             Characters
           </NavLink>
         </header>
-        {/* ADD YOUR ROUTES HERE */}
+        <FilmList films={films} />
       </BrowserRouter>
     </div>
   );
