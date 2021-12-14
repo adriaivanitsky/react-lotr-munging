@@ -1,6 +1,6 @@
 import './App.css';
 import { useEffect, useState } from 'react';
-import { BrowserRouter, NavLink } from 'react-router-dom';
+import { BrowserRouter, NavLink, Switch, Route } from 'react-router-dom';
 
 import CharacterList from './components/Characters/CharacterList';
 import FilmList from './components/Films/FilmList';
@@ -15,8 +15,6 @@ function App() {
   }, []);
 
   const getFilms = async () => {
-    // Add your code here!
-    // 1. Get data using fetch from https://the-one-api.dev/v2/movie/ (don't forget to set your header!)
     const resp = await fetch(`${process.env.REACT_APP_SUPABASE_URL}/rest/v1/films`, {
       headers: {
         apikey: process.env.REACT_APP_SUPABASE_KEY,
@@ -35,23 +33,24 @@ function App() {
       ];
     });
     // console.log(movieData);
-    // 2. Transform the response so that films contains nested arrays of:
-    //   - the film's title
-    //   - the film's title "slugified" i.e. in all lower case, with words separated with dashes,
-    //   - the box office total
-    //   - academy award nominations
-    // NOTE: make sure you look at the response from the server - it may not be consistent
-    // [["The Lord of the Rings Series", "the-lord-of-the-rings-series", 2917, 30 ], ["The Hobbit Series", "the-hobit-series", 2932, 7]...]
 
-    // 3. Set the resulting transformation as state using setFilms
     setFilms(movieData);
     // console.log(films);
-
-    // 4. You'll know it works if the films show up on the page
   };
 
   const getCharacters = async () => {
-    // Add your code here!
+    const resp = await fetch(`${process.env.REACT_APP_SUPABASE_URL}/rest/v1/characters`, {
+      headers: {
+        apikey: process.env.REACT_APP_SUPABASE_KEY,
+        Authorization: `Bearer ${process.env.REACT_APP_SUPABASE_KEY}`,
+      },
+    });
+    const data = await resp.json();
+    // console.log(data);
+    const characterData = data.map((item) => {
+      return { name: item.name, dates: `${item.birth} - ${item.death}` };
+    });
+    // console.log(characterData);
     // 1. Get data using fetch from https://the-one-api.dev/v2/character/
     // 2. Update the response data with the key `dates` which is a combination of
     //    the `birth` key and the `death key` separated with a dash. If neither date
@@ -63,7 +62,7 @@ function App() {
     //    ]
     // 3. Set the resulting transformation as state using setCharacters
     // 4. You'll know it works if the characters show up on the page
-    return [];
+    setCharacters(characterData);
   };
 
   return (
@@ -77,7 +76,14 @@ function App() {
             Characters
           </NavLink>
         </header>
-        <FilmList films={films} />
+        <Switch>
+          <Route exact path="/films">
+            <FilmList films={films} />
+          </Route>
+          <Route exact path="/characters">
+            <CharacterList characters={characters} />
+          </Route>
+        </Switch>
       </BrowserRouter>
     </div>
   );
